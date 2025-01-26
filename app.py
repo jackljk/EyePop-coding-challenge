@@ -1,8 +1,5 @@
 import streamlit as st
-import pandas as pd
-from io import StringIO
 from dotenv import load_dotenv
-from eyepop import EyePopSdk
 from helpers import call_eye_pop, update_state_vars
 
 load_dotenv()
