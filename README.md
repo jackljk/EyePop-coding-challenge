@@ -11,3 +11,7 @@ EyePop interview coding challenge
 
 - PythonSDK docs could be more detailed and organized with headers and a table of contents.
 - Also example code does not work/(not updated?)
+- **Probably a bug?** but when parsing image3 one of my test run, it detected a "text" item but did not provide a "texts" list in the response.
+
+<!-- insert image -->
+![text_detection](/assets/notes/possible_bug.png)
