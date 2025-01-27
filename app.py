@@ -1,7 +1,17 @@
 import streamlit as st
 from dotenv import load_dotenv
 from helpers import call_eye_pop, update_state_vars
+import os
 
+# for deployment
+try:
+    # set environment variables using os by getting from the st.secrets
+    os.environ['EYEPOP_SECRET_KEY'] = st.secrets['keys']['EYEPOP_SECRET_KEY']
+    os.environ['EYEPOP_POP_ID'] = st.secrets['keys']['EYEPOP_POP_ID']
+except:
+    pass
+
+# for local testing
 load_dotenv()
 
 
@@ -19,10 +29,7 @@ st.title("Nutrition Label Reader")
 format_option = st.selectbox("Select format", ["json", "dataframe (editable)"])
 st.slider("Confidence threshold", 0.0, 1.0, 0.5, key="confidence_threshold")
 uploaded_file = st.file_uploader("Choose a file")
-print(uploaded_file == st.session_state.uploaded_file)
-print(st.session_state.confidence_threshold)
 if uploaded_file is not None:
-    print('here')
     st.session_state.uploaded_file = uploaded_file
     response = call_eye_pop(uploaded_file)
     update_state_vars(response)

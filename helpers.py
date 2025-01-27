@@ -14,7 +14,6 @@ THRESHOLD = 10
 def call_eye_pop(uploaded_file):
     if st.session_state.uploaded_file is None and uploaded_file != st.session_state.uploaded_file:
         return
-    print('calling eye pop')
     # save the uploaded file to /assests/uploads/uploaded_image.png
     filepath = 'assets/uploads/uploaded_image.png'
     with open(filepath, 'wb') as f:

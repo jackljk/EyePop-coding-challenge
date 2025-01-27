@@ -1,0 +1,4 @@
+eyepop
+python-dotenv
+pandas
+streamlit
