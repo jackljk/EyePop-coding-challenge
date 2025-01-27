@@ -5,21 +5,26 @@ from helpers import call_eye_pop, update_state_vars
 load_dotenv()
 
 
-st.session_state.nutrition_data = None
-st.session_state.raw_response = None
-st.session_state.uploaded_file = None
+
+if 'uploaded_file' not in st.session_state:
+    st.session_state.uploaded_file = None   
+    st.session_state.nutrition_data = None
+    st.session_state.raw_response = None
 
 
 
-st.title("Nutrition Extractor")
+
+st.title("Nutrition Label Reader")
 
 format_option = st.selectbox("Select format", ["json", "dataframe (editable)"])
 st.slider("Confidence threshold", 0.0, 1.0, 0.5, key="confidence_threshold")
 uploaded_file = st.file_uploader("Choose a file")
-
+print(uploaded_file == st.session_state.uploaded_file)
+print(st.session_state.confidence_threshold)
 if uploaded_file is not None:
+    print('here')
     st.session_state.uploaded_file = uploaded_file
-    response = call_eye_pop()
+    response = call_eye_pop(uploaded_file)
     update_state_vars(response)
     
 col1, col2 = st.columns(2)

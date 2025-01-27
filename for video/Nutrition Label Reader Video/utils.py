@@ -1,37 +1,6 @@
 import re
-from eyepop import EyePopSdk
-import streamlit as st
 
-# variables
-units = {'mg', 'g', '%', 'kg', 'lb', 'oz'}
 
-NUTRITIONS = [
-    'protein', 'fat', 'calories', 'sugar', 'sodium', 'fiber', 'carbohydrate', 'cholesterol', 'carbs'
-]
-THRESHOLD = 10
-
-@st.cache_data
-def call_eye_pop(uploaded_file):
-    if st.session_state.uploaded_file is None and uploaded_file != st.session_state.uploaded_file:
-        return
-    print('calling eye pop')
-    # save the uploaded file to /assests/uploads/uploaded_image.png
-    filepath = 'assets/uploads/uploaded_image.png'
-    with open(filepath, 'wb') as f:
-        f.write(st.session_state.uploaded_file.getvalue())
-    
-    with st.spinner("Processing..."):
-        # send file to eyepop api to get the result
-        with EyePopSdk.endpoint() as endpoint:
-            response = endpoint.upload(filepath).predict()
-            
-    return response
-
-def update_state_vars(response):
-    st.session_state.nutrition_data = get_nutrition_values(response, NUTRITIONS, THRESHOLD, st.session_state.confidence_threshold)
-    st.session_state.raw_response = response
-    
-    
 def get_nutrition_values(response, nutritions, threshold, confidence_threshold=0.5):
     """
     Extracts nutritional information from the response based on the given nutrition strings and threshold.
@@ -68,10 +37,9 @@ def parse_result(response_obj, nutritions, threshold, confidence_threshold=0.5):
     # get all the objects that contain nutrition information
     nutrition_objs = []
     for obj in response_obj:
-        text = obj.get("texts", [{}])[0].get("text", "").lower().replace(" ", "")
         if (
             any([
-                    nutr in text
+                    nutr in obj["texts"][0]["text"].lower().replace(" ", "")
                     for nutr in nutritions
                 ])
             and obj.get("confidence", 0) >= confidence_threshold
@@ -88,7 +56,7 @@ def parse_result(response_obj, nutritions, threshold, confidence_threshold=0.5):
                 and 
                 comparison_obj["y"] - threshold <= y <= comparison_obj["y"] + threshold
             ):
-                val = comparison_obj.get("texts", [{}])[0].get("text", "")  # get the text value
+                val = comparison_obj["texts"][0]["text"]  # get the text value
                 val_x = comparison_obj["x"]  # get the x value
                 if (
                     val == obj["texts"][0]["text"]
